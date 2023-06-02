@@ -311,14 +311,14 @@ def email_verification(email):
                 msg = "Are you using Google chrome browser for login?\nPlease type Y or N"
                 return msg
             else:
-                msg = "Dear Applicant, Please use the same email id which has been used during the registration process.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)"
+                msg = "Dear Applicant, Please use the same email id which has been used during the registration process.\n\nDoes this solution resolved your query(Y or N)"
                 return msg  
         else:
-            msg = "Dear Applicant, Please use the same email id which has been used during the registration process.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)"
+            msg = "Dear Applicant, Please use the same email id which has been used during the registration process.\n\nDoes this solution resolved your query(Y or N)"
             return msg     
             
     else: 
-        msg = "Dear Applicant, Please use the same email id which has been used during the registration process.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)"
+        msg = "Dear Applicant, Please use the same email id which has been used during the registration process.\n\nDoes this solution resolved your query(Y or N)"
         return msg
 
 def passport_validation(passport_number,email):
@@ -450,14 +450,11 @@ def already_existing_user_name(user_in,phone):
     link = 'https://support.dataflowgroup.com/support/solutions/articles/17000125186-dataflow-appeal-process'
     LCN4 = msg_find_detailed_process.format(link)
     
-    if user_in == '1' or user_in == '2' or user_in == '3' or user_in == '4' or user_in == '5' or user_in == '7' or user_in == '9' or user_in == '10' or user_in == '11':
+    if user_in == '1' or user_in == '2' or user_in == '3' or user_in == '4' or user_in == '5' or user_in == '7' or user_in == '8'  or user_in == '10' or user_in == '11':
         return LCN
     
     elif user_in == '6':
         return LCN3
-        
-    elif user_in == '8':
-        return LCN2
         
     elif user_in == '9':
         return LCN4
@@ -1549,7 +1546,7 @@ def cases_phone_new_sharing(phone, email=None):
 
 def case_name():
   link = "www.dataflowstatus.com"
-  msg = "Please visit : {} to check the status for your DataFlow application.\n\nDo you have any other questions? (Y or N)".format(link)
+  msg = "Please visit {} to check the status for your DataFlow application.\n\nDo you have any other questions? (Y or N)".format(link)
   return msg
 
 def application_ques(cli_name):
@@ -2836,7 +2833,7 @@ def message(request):
             body=msg_sent,
             to=str(sender_number),
             )
-        elif last_user_msg == '2' or last_user_msg == '3' or last_user_msg == '5'  or last_user_msg == '7' or  last_user_msg == '9' or  last_user_msg == '11' :
+        elif last_user_msg == '2' or last_user_msg == '3' or last_user_msg == '5'  or last_user_msg == '7' or  last_user_msg == '9' or  last_user_msg == '11' or  last_user_msg == '8' :
             msg_sent = already_existing_user_name(user_in = message, phone = phone)
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
@@ -2852,8 +2849,8 @@ def message(request):
             body=msg_sent,
             to=str(sender_number),
             )
-            
-        elif last_user_msg == '8' or last_user_msg == '4':
+
+        elif last_user_msg == '4':
             msg_sent = already_existing_user_csdisable(user_in = message)
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
@@ -2891,7 +2888,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "Report transfer query_name"),
       
         elif message == "8":
-            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "case_status_link_name"),
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "case_status_country_name"),
         
         elif message == "9":
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "case_status_link_name"),
@@ -3066,6 +3063,63 @@ def message(request):
             to=str(sender_number)
             )
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "validation(y/n)_identifier_email"),
+
+    elif last_identifier == "case_status_link_name" and last_next_step.startswith('Please find the detailed process here'):
+        last_msg = WhatsappMessages.objects.filter(sender_number = sender_number).values().last()
+        last_user_msg = str(last_msg['message'])
+        if last_user_msg.lower() == 'y':
+            msg_sent = "1. Create a support ticket\n2. Return to the main menu\n\nSelect the query by choosing the relevant number from 1 or 2"
+            returned_mesage = twilioclient.messages.create(
+            from_= str(receiver),
+            body = msg_sent,
+            to = str(sender_number)
+             )
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "create_ticket_or_return_name"),     
+        elif last_user_msg.lower() == 'n':
+            msg_sent = "Thank you for contacting the DataFlow Group. Please be assured that we are working to resolve your enquiry as soon as possible. \n\nIf you need any further assistance, Please say 'Hello'"
+            returned_mesage = twilioclient.messages.create(
+            from_= str(receiver),
+            body = msg_sent,
+            to = str(sender_number),
+             )
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
+        else:
+            msg_sent = "Please type either 'Y' or 'N'"
+            returned_mesage = twilioclient.messages.create(
+            from_=str(receiver),
+            body= msg_sent,
+            to=str(sender_number)
+            )
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "validation(y/n)_identifier_name"),
+
+
+    elif last_identifier == "case_status_link_name" and last_next_step.startswith('Please visit'):
+        last_msg = WhatsappMessages.objects.filter(sender_number = sender_number).values().last()
+        last_user_msg = str(last_msg['message'])
+        if last_user_msg.lower() == 'y':
+            msg_sent = "1. Create a support ticket\n2. Return to the main menu\n\nSelect the query by choosing the relevant number from 1 or 2"
+            returned_mesage = twilioclient.messages.create(
+            from_= str(receiver),
+            body = msg_sent,
+            to = str(sender_number)
+             )
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "create_ticket_or_return_name"),     
+        elif last_user_msg.lower() == 'n':
+            msg_sent = "Thank you for contacting the DataFlow Group. Please be assured that we are working to resolve your enquiry as soon as possible. \n\nIf you need any further assistance, Please say 'Hello'"
+            returned_mesage = twilioclient.messages.create(
+            from_= str(receiver),
+            body = msg_sent,
+            to = str(sender_number),
+             )
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
+        else:
+            msg_sent = "Please type either 'Y' or 'N'"
+            returned_mesage = twilioclient.messages.create(
+            from_=str(receiver),
+            body= msg_sent,
+            to=str(sender_number)
+            )
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "validation(y/n)_identifier_name"),
 
     elif last_identifier == "case_status_link_email" and last_next_step.startswith("I can see there are no pending cases with us. \nDo you have any other questions? (Y or N)"):
         last_msg = WhatsappMessages.objects.filter(sender_number = sender_number).values().last()
@@ -3416,7 +3470,7 @@ def message(request):
 
     elif last_identifier == "detailed description":
       if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
-        msg_sent =  "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent =  "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -4225,7 +4279,7 @@ def message(request):
 
     elif last_identifier == "detailed description_email":
       if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
-        msg_sent =  "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent =  "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -4235,7 +4289,7 @@ def message(request):
     
     elif last_identifier == "detailed description_name":
       if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
-        msg_sent =  "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent =  "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -4574,7 +4628,7 @@ def message(request):
                 )
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
 
-            elif query_selected_by_user_others == '12':
+            elif query_selected_by_user_others == '11':
                 msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'General Queries', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
@@ -4583,8 +4637,9 @@ def message(request):
                 )
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
             
-            elif query_selected_by_user_others == '1' and query_selected_by_user == '11':
-                msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Sharing Documents', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
+            elif query_selected_by_user_others == '1' and query_selected_by_user == '9':
+                # msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Retrieve DataFlow case number', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
+                msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Re-verification and appeal enquiries', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -4592,7 +4647,7 @@ def message(request):
                 )
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
 
-            elif query_selected_by_user_others == '1' and query_selected_by_user == '9':
+            elif query_selected_by_user_others == '8':
                 msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Retrieve DataFlow case number', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
@@ -4600,9 +4655,9 @@ def message(request):
                 to=str(sender_number)
                 )
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
-                   
+                
             elif query_selected_by_user_others == '1' and query_selected_by_user == '10':
-                msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Re-verification and appeal enquiries', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
+                msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Sharing Documents', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
                 # msg_sent = "query selected bu user = " + query_selected_by_user_others + "and query selected bu user = " + query_selected_by_user + "  report reissuance"
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
@@ -4619,6 +4674,8 @@ def message(request):
                 to=str(sender_number)
                 )
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
+            else:
+                return "Trial"
 
         else:
             msg_sent = 'Please enter either 1 or 2'
@@ -4767,7 +4824,7 @@ def message(request):
                 )
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
 
-            elif query_selected_by_user_others == '12':
+            elif query_selected_by_user_others == '11':
                 msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'General Queries', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
@@ -4786,7 +4843,7 @@ def message(request):
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
 
             elif query_selected_by_user_others == '1' and query_selected_by_user == '9':
-                msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Retrieve DataFlow case number', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
+                msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Re-verification and appeal enquiries', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -4795,7 +4852,7 @@ def message(request):
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
                    
             elif query_selected_by_user_others == '1' and query_selected_by_user == '10':
-                msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Re-verification and appeal enquiries', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
+                msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Sharing Documents', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
                 # msg_sent = "query selected bu user = " + query_selected_by_user_others + "and query selected bu user = " + query_selected_by_user + "  report reissuance"
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
@@ -4812,6 +4869,18 @@ def message(request):
                 to=str(sender_number)
                 )
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
+            
+            elif query_selected_by_user_others == '8':
+                msg_sent = ticket_creation(description = user_description_msg, email = 'pahlawat@dataflowgroup.com', cf_dataflow_case_numbner = 'NA', cf_commitment_date_given = date_string, cf_customer_type = ct, cf_enter_dataflow_case_number_mandatory_to_look_up_and_enter_from_veriflow = 'NA', subject = 'Retrieve DataFlow case number', cf_closure_problem_types = 'Application Status', cf_problem_disposition = 'Beyond TAT',status = 2, priority = 1,type = 'My case is past due date - when will I get the verification report?',cf_licensing_authority_or_institution = client_name)
+                returned_mesage = twilioclient.messages.create(
+                from_=str(receiver),
+                body= msg_sent,
+                to=str(sender_number)
+                )
+                WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
+                
+            else:
+                return 'Trial'
 
         else:
             msg_sent = 'Please enter either 1 or 2'
@@ -5090,7 +5159,7 @@ def message(request):
             body= msg_sent,
             to=str(sender_number)
              )
-            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_phone"),
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ques_case_ini_name"),
    
    
     ######################## case status - Phone #############################
@@ -5723,7 +5792,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
             
     elif last_identifier == 'query_ques_number_name':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -6487,7 +6556,7 @@ def message(request):
     
     elif last_identifier == "linking_application_email":
         if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -6508,7 +6577,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "asking_computer_for_submit_email"),
                     
         elif last_user_msg.lower() == 'n':
-            msg_sent = "Please use the latest version of google chrome to login.\n\nI hope the given solution resolved your concern regarding the submit issue(Y or N)"
+            msg_sent = "Please use the latest version of google chrome for login.\n\nDoes this solution resolved your query(Y or N)"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -6540,7 +6609,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "required_fields_email"),
                     
         elif last_user_msg.lower() == 'n':
-            msg_sent = "Please use Desktop or Laptop to login.\n\nI hope the given solution resolved your concern regarding the submit issue(Y or N) "
+            msg_sent = "Please use Desktop or Laptop for login.\n\nDoes this solution resolved your query(Y or N) "
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -6571,7 +6640,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "create_return_tech_email"),
                     
         elif last_user_msg.lower() == 'n':
-            msg_sent = "Please fill all the required fields to submit your application.\n\nI hope the given solution resolved your concern regarding the submit issue(Y or N) "
+            msg_sent = "Please fill all the required fields to submit your application.\n\nDoes this solution resolved your query(Y or N) "
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -6920,7 +6989,7 @@ def message(request):
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "asking_computer_email"),
                         
             elif last_user_msg.lower() == 'n':
-                msg_sent = "Please use the latest version of google chrome to login.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)"
+                msg_sent = "Please use the latest version of google chrome for login.\n\nDoes this solution resolved your query(Y or N)"
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -6937,7 +7006,7 @@ def message(request):
                 )
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "y/n_for_chrome_email"),
     
-        elif last_next_step.startswith("Dear Applicant, Please use the same email id which has been used during the registration process.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)"):
+        elif last_next_step.startswith("Dear Applicant, Please use the same email id which has been used during the registration process.\n\nDoes this solution resolved your query(Y or N)"):
             last_msg = WhatsappMessages.objects.filter(sender_number = sender_number).values().last()
             last_user_msg = last_msg['message']
             if last_user_msg.lower() == 'y':
@@ -6980,7 +7049,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "asking_computer_email"),
                     
         elif last_user_msg.lower() == 'n':
-            msg_sent = "Please use the latest version of google chrome to login.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)"
+            msg_sent = "Please use the latest version of google chrome for login.\n\nDoes this solution resolved your query(Y or N)"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -7034,7 +7103,7 @@ def message(request):
         last_user_msg = last_msg['message']
         print(last_user_msg)
         if last_user_msg.lower() == 'y':
-            msg_sent = "Have you tried selecting 'Forgot Password' option to receive a temporary password to login?\nPlease type Y or N"
+            msg_sent = "Have you tried selecting 'Forgot Password' option to receive a temporary password for login?\nPlease type Y or N"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -7043,7 +7112,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "forgot_password_email"),
                     
         elif last_user_msg.lower() == 'n':
-            msg_sent = "Please use Desktop or Laptop to login.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N) "
+            msg_sent = "Please use Desktop or Laptop for login.\n\nDoes this solution resolved your query(Y or N) "
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -7115,7 +7184,7 @@ def message(request):
         
             if user_inp_msg == '7' and last_user_msg == '3':
                 link = 'https://www.dfdoh.com/'
-                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)".format(link)
+                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nDoes this solution resolved your query(Y or N)".format(link)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -7125,7 +7194,7 @@ def message(request):
 
             elif user_inp_msg == '6' and last_user_msg == '1':
                 link = 'www.dfmoms.com'
-                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)".format(link)
+                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nDoes this solution resolved your query(Y or N)".format(link)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -7135,7 +7204,7 @@ def message(request):
             
             elif user_inp_msg == '7' and last_user_msg == '5':
                 link = 'https://dha.dfgateway.com/'
-                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)".format(link)
+                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nDoes this solution resolved your query(Y or N)".format(link)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -7145,7 +7214,7 @@ def message(request):
                 
             else:
                 link = 'https://www.dfgateway.com/'
-                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)".format(link)
+                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nDoes this solution resolved your query(Y or N)".format(link)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -7225,7 +7294,7 @@ def message(request):
 
     elif last_identifier == "detailed_description_tech_email":
         if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -7506,6 +7575,39 @@ def message(request):
             )
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "individual_pro_tech_email1"),
 
+    elif last_identifier == 'create ticket_email':
+        last_msg = WhatsappMessages.objects.filter(sender_number = sender_number).values().last()
+        last_user_msg = last_msg['message']
+        print(last_user_msg)
+        
+        if last_user_msg.lower() == 'y':
+            msg_sent = "How can we help you today?\nSelect the query by choosing the relevant number from 1-12 \n\n1. Case Status \n2. How to apply \n3. Technical error \n4. Refund request \n5. Report clarification \n6. Additional Document Verification \n7. Report copy request \n8. Report re-issuance queries\n9. Retrieve DataFlow case number \n10. Re-verification and appeal enquiries \n11. Sharing documents/information requested by DataFlow Team \n12. Others/General Queries"
+            returned_mesage = twilioclient.messages.create(
+            from_=str(receiver),
+            body= msg_sent,
+            to=str(sender_number)
+             )
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "technical_error_country"),
+            
+            
+        elif last_user_msg.lower() == 'n':
+            msg_sent = "Thank you for contacting the DataFlow Group. Please be assured that we are working to resolve your enquiry as soon as possible. \n\nIf you need any further assistance, Please say 'Hello'"
+            returned_mesage = twilioclient.messages.create(
+            from_=str(receiver),
+            body= msg_sent,
+            to=str(sender_number)
+             )
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
+
+        else:
+            msg_sent = "Please type 'Y' or 'N'"
+            returned_mesage = twilioclient.messages.create(
+            from_=str(receiver),
+            body= msg_sent,
+            to=str(sender_number)
+             )
+            WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "create ticket_email"),
+
 
     elif last_identifier == "email_for_verification_email":
       if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
@@ -7638,7 +7740,7 @@ def message(request):
               WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
               
     elif last_identifier == 'query_tech_number_ini_email':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -8483,7 +8585,7 @@ def message(request):
               WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
   
     elif last_identifier == 'query_tech_name_number':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -9313,7 +9415,7 @@ def message(request):
     
     elif last_identifier == "linking_application":
         if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -9334,7 +9436,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "asking_computer_for_submit"),
                     
         elif last_user_msg.lower() == 'n':
-            msg_sent = "Please use the latest version of google chrome to login.\n\nI hope the given solution resolved your concern regarding the submit issue(Y or N)"
+            msg_sent = "Please use the latest version of google chrome for login.\n\nDoes this solution resolved your query(Y or N)"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -9366,7 +9468,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "required_fields"),
                     
         elif last_user_msg.lower() == 'n':
-            msg_sent = "Please use Desktop or Laptop to login.\n\nI hope the given solution resolved your concern regarding the submit issue(Y or N) "
+            msg_sent = "Please use Desktop or Laptop for login.\n\nDoes this solution resolved your query(Y or N) "
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -9397,7 +9499,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "create_return_tech"),
                     
         elif last_user_msg.lower() == 'n':
-            msg_sent = "Please fill all the required fields to submit your application.\n\nI hope the given solution resolved your concern regarding the submit issue(Y or N) "
+            msg_sent = "Please fill all the required fields to submit your application.\n\nDoes this solution resolved your query(Y or N) "
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -9741,7 +9843,7 @@ def message(request):
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "asking_computer"),
                         
             elif last_user_msg.lower() == 'n':
-                msg_sent = "Please use the latest version of google chrome to login.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)"
+                msg_sent = "Please use the latest version of google chrome for login.\n\nDoes this solution resolved your query(Y or N)"
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -9758,7 +9860,7 @@ def message(request):
                 )
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "y/n_for_chrome"),
     
-        elif last_next_step.startswith("Dear Applicant, Please use the same email id which has been used during the registration process.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)"):
+        elif last_next_step.startswith("Dear Applicant, Please use the same email id which has been used during the registration process.\n\nDoes this solution resolved your query(Y or N)"):
             last_msg = WhatsappMessages.objects.filter(sender_number = sender_number).values().last()
             last_user_msg = last_msg['message']
             if last_user_msg.lower() == 'y':
@@ -9801,7 +9903,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "asking_computer"),
                     
         elif last_user_msg.lower() == 'n':
-            msg_sent = "Please use the latest version of google chrome to login.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)"
+            msg_sent = "Please use the latest version of google chrome for login.\n\nDoes this solution resolved your query(Y or N)"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -9855,7 +9957,7 @@ def message(request):
         last_user_msg = last_msg['message']
         print(last_user_msg)
         if last_user_msg.lower() == 'y':
-            msg_sent = "Have you tried selecting 'Forgot Password' option to receive a temporary password to login?\nPlease type Y or N"
+            msg_sent = "Have you tried selecting 'Forgot Password' option to receive a temporary password for login?\nPlease type Y or N"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -9864,7 +9966,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "forgot_password"),
                     
         elif last_user_msg.lower() == 'n':
-            msg_sent = "Please use Desktop or Laptop to login.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N) "
+            msg_sent = "Please use Desktop or Laptop for login.\n\nDoes this solution resolved your query(Y or N) "
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -9936,7 +10038,7 @@ def message(request):
         
             if user_inp_msg == '7' and last_user_msg == '3':
                 link = 'https://www.dfdoh.com/'
-                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)".format(link)
+                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nDoes this solution resolved your query(Y or N)".format(link)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -9946,7 +10048,7 @@ def message(request):
 
             elif user_inp_msg == '6' and last_user_msg == '1':
                 link = 'www.dfmoms.com'
-                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)".format(link)
+                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nDoes this solution resolved your query(Y or N)".format(link)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -9956,7 +10058,7 @@ def message(request):
             
             elif user_inp_msg == '7' and last_user_msg == '5':
                 link = 'https://dha.dfgateway.com/'
-                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)".format(link)
+                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nDoes this solution resolved your query(Y or N)".format(link)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -9966,7 +10068,7 @@ def message(request):
                 
             else:
                 link = 'https://www.dfgateway.com/'
-                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nI hope the given solution resolved your concern regarding the Login issue(Y or N)".format(link)
+                msg_sent = "Please visit : {} \nand select the forgot password option to request a temporary password using your registered email address.\n\nDoes this solution resolved your query(Y or N)".format(link)
                 returned_mesage = twilioclient.messages.create(
                 from_=str(receiver),
                 body= msg_sent,
@@ -10046,7 +10148,7 @@ def message(request):
 
     elif last_identifier == "detailed_description_tech_phone":
         if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -10494,7 +10596,7 @@ def message(request):
               WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
               
     elif last_identifier == 'query_tech_number_ini':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -11014,7 +11116,7 @@ def message(request):
         elif last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
           
             #msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -11059,7 +11161,7 @@ def message(request):
         elif last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
           
             #msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -11136,7 +11238,7 @@ def message(request):
         if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
             # msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -11550,7 +11652,7 @@ def message(request):
       WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_adv_name_number"),
   
     elif last_identifier == 'query_adv_name_number':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -11925,7 +12027,7 @@ def message(request):
         elif last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
           
             #msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -11971,7 +12073,7 @@ def message(request):
         elif last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
           
             #msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -12048,7 +12150,7 @@ def message(request):
         if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
             # msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -12885,7 +12987,7 @@ def message(request):
 
     elif last_identifier == "HTA_email_detailed description":
       if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
-        msg_sent =  "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent =  "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -12943,7 +13045,7 @@ def message(request):
 
     elif last_identifier == "HTA_email_detailed description":
       if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
-        msg_sent =  "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent =  "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -13836,7 +13938,7 @@ def message(request):
 
     elif last_identifier == "HTA_phone_detailed description":
       if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
-        msg_sent =  "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent =  "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -14409,7 +14511,7 @@ def message(request):
                 WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),             
                 
     elif last_identifier == 'query_htw_number_name':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -15019,7 +15121,7 @@ def message(request):
               
         elif last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -15064,7 +15166,7 @@ def message(request):
               
         elif last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -15111,7 +15213,7 @@ def message(request):
         elif last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
            # msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -15157,7 +15259,7 @@ def message(request):
         elif last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
            # msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -15266,7 +15368,7 @@ def message(request):
         if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
             # msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -15303,7 +15405,7 @@ def message(request):
       
         if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -15804,7 +15906,7 @@ def message(request):
         elif last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
            # msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -15849,7 +15951,7 @@ def message(request):
         elif last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
            # msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -15926,7 +16028,7 @@ def message(request):
         if last_next_step.startswith("Please provide a detailed description of the issue you are facing so we can create the support ticket on your behalf. "):
     
             # msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -16326,7 +16428,7 @@ def message(request):
         
       
         if "How can we help you today?\nSelect the query by choosing the relevant number from 1-12 \n\n1. Case Status \n2. How to apply" in validation_msg :
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_= str(receiver),
             body = msg_sent,
@@ -16342,7 +16444,7 @@ def message(request):
         
         
         if last_user_msg == '1' or last_user_msg == '2':
-            msg_sent = "Please select problem disposition for which you want refund: \n\n1. Cancellation of Application (within 48 hours) \n2. Case Not Processed (Duplicate Case) \n3. Document Submitted Is Out of Scope \n4. Double Payment (Applicant Was Charged Twice) \n5. Excess Payment \n6. Express Service TAT Not Fulfilled \n7. Wrong Category Selected \n8. Wrong Client Selected \n9. Wrong Package Selection"
+            msg_sent = "Please select one of the following reasons for refund: \n\n1. Cancellation of Application (within 48 hours) \n2. Case Not Processed (Duplicate Case) \n3. Document Submitted Is Out of Scope \n4. Double Payment (Applicant Was Charged Twice) \n5. Excess Payment \n6. Express Service TAT Not Fulfilled \n7. Wrong Category Selected \n8. Wrong Client Selected \n9. Wrong Package Selection"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -16378,7 +16480,7 @@ def message(request):
         
         
         if last_user_msg == '1' or last_user_msg == '2':
-            msg_sent = "Please select problem disposition for which you want refund: \n\n1. Cancellation of Application (within 48 hours) \n2. Case Not Processed (Duplicate Case) \n3. Document Submitted Is Out of Scope \n4. Double Payment (Applicant Was Charged Twice) \n5. Excess Payment \n6. Express Service TAT Not Fulfilled \n7. Wrong Category Selected \n8. Wrong Client Selected \n9. Wrong Package Selection"
+            msg_sent = "Please select one of the following reasons for refund: \n\n1. Cancellation of Application (within 48 hours) \n2. Case Not Processed (Duplicate Case) \n3. Document Submitted Is Out of Scope \n4. Double Payment (Applicant Was Charged Twice) \n5. Excess Payment \n6. Express Service TAT Not Fulfilled \n7. Wrong Category Selected \n8. Wrong Client Selected \n9. Wrong Package Selection"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -16958,7 +17060,7 @@ def message(request):
         WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_refund_name_number"),
     
     elif last_identifier == 'query_refund_name_number':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -16972,7 +17074,7 @@ def message(request):
         last_user_msg = last_msg['message']
         print(last_user_msg)
         
-        msg_sent = "Please select problem disposition for which you want refund: \n\n1. Cancellation of Application (within 48 hours) \n2. Case Not Processed (Duplicate Case) \n3. Document Submitted Is Out of Scope \n4. Double Payment (Applicant Was Charged Twice) \n5. Excess Payment \n6. Express Service TAT Not Fulfilled \n7. Wrong Category Selected \n8. Wrong Client Selected \n9. Wrong Package Selection"
+        msg_sent = "Please select one of the following reasons for refund: \n\n1. Cancellation of Application (within 48 hours) \n2. Case Not Processed (Duplicate Case) \n3. Document Submitted Is Out of Scope \n4. Double Payment (Applicant Was Charged Twice) \n5. Excess Payment \n6. Express Service TAT Not Fulfilled \n7. Wrong Category Selected \n8. Wrong Client Selected \n9. Wrong Package Selection"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -17208,7 +17310,7 @@ def message(request):
       
         if "How can we help you today?\nSelect the query by choosing the relevant number from 1-12 \n\n1. Case Status \n2. How to Apply" in validation_msg :
             # msg_sent = "Please type the corresponding case number associated with the ticket you want to create. If you don't have a case number yet, please type NA."
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_= str(receiver),
             body = msg_sent,
@@ -17223,7 +17325,7 @@ def message(request):
         print(last_user_msg)
         
         if last_user_msg == '1' or last_user_msg == '2':
-            msg_sent = "Please select problem disposition for which you want refund: \n\n1. Cancellation of Application (within 48 hours) \n2. Case Not Processed (Duplicate Case) \n3. Document Submitted Is Out of Scope \n4. Double Payment (Applicant Was Charged Twice) \n5. Excess Payment \n6. Express Service TAT Not Fulfilled \n7. Wrong Category Selected \n8. Wrong Client Selected \n9. Wrong Package Selection"
+            msg_sent = "Please select one of the following reasons for refund: \n\n1. Cancellation of Application (within 48 hours) \n2. Case Not Processed (Duplicate Case) \n3. Document Submitted Is Out of Scope \n4. Double Payment (Applicant Was Charged Twice) \n5. Excess Payment \n6. Express Service TAT Not Fulfilled \n7. Wrong Category Selected \n8. Wrong Client Selected \n9. Wrong Package Selection"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -17254,7 +17356,7 @@ def message(request):
         print(last_user_msg)
         
         if last_user_msg == '1' or last_user_msg == '2':
-            msg_sent = "Please select problem disposition for which you want refund: \n\n1. Cancellation of Application (within 48 hours) \n2. Case Not Processed (Duplicate Case) \n3. Document Submitted Is Out of Scope \n4. Double Payment (Applicant Was Charged Twice) \n5. Excess Payment \n6. Express Service TAT Not Fulfilled \n7. Wrong Category Selected \n8. Wrong Client Selected \n9. Wrong Package Selection"
+            msg_sent = "Please select one of the following reasons for refund: \n\n1. Cancellation of Application (within 48 hours) \n2. Case Not Processed (Duplicate Case) \n3. Document Submitted Is Out of Scope \n4. Double Payment (Applicant Was Charged Twice) \n5. Excess Payment \n6. Express Service TAT Not Fulfilled \n7. Wrong Category Selected \n8. Wrong Client Selected \n9. Wrong Package Selection"
             returned_mesage = twilioclient.messages.create(
             from_=str(receiver),
             body= msg_sent,
@@ -17827,7 +17929,7 @@ def message(request):
     #     WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_OCT_number"),
     
     # elif last_identifier == 'query_OCT_number':
-    #     msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+    #     msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
     #     returned_mesage = twilioclient.messages.create(
     #     from_=str(receiver),
     #     body= msg_sent,
@@ -18122,7 +18224,7 @@ def message(request):
         WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_OCT_name_number"),
     
     elif last_identifier == 'query_OCT_name_number':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -18417,7 +18519,7 @@ def message(request):
     #     WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_OCT_number_ini"),
     
     # elif last_identifier == 'query_OCT_numberp_ini':
-    #     msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+    #     msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
     #     returned_mesage = twilioclient.messages.create(
     #     from_=str(receiver),
     #     body= msg_sent,
@@ -18830,7 +18932,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
     
     elif last_identifier == 'query_ret_number':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -19172,7 +19274,7 @@ def message(request):
         WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_ret_name_number"),
     
     elif last_identifier == 'query_ret_name_number':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -19588,7 +19690,7 @@ def message(request):
         WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "ask case number rdcn"),
             
     elif last_identifier == 'ask case number rdcn':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -19973,7 +20075,7 @@ def message(request):
     #         WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
     
     # elif last_identifier == 'query_ret_number_ini':
-    #     msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+    #     msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
     #     returned_mesage = twilioclient.messages.create(
     #     from_=str(receiver),
     #     body= msg_sent,
@@ -20190,7 +20292,7 @@ def message(request):
       
         
         if "How can we help you today?\nSelect the query by choosing the relevant number from 1-12 \n\n1. Case Status \n2. How to apply" in validation_msg :
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_= str(receiver),
             body = msg_sent,
@@ -20686,7 +20788,7 @@ def message(request):
         WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "query_clr_name_number"),
     
     elif last_identifier == 'query_clr_name_number':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -20902,7 +21004,7 @@ def message(request):
         validation_msg = stating_query['message']
       
         if "How can we help you today?\nSelect the query by choosing the relevant number from 1-12 \n\n1. Case Status \n2. How to Apply" in validation_msg :
-            msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+            msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
             returned_mesage = twilioclient.messages.create(
             from_= str(receiver),
             body = msg_sent,
@@ -21516,7 +21618,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),       
             
     elif last_identifier == 'query_ques_number_copy':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -21768,7 +21870,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
             
     elif last_identifier == 'query_copy_number_name':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -22092,7 +22194,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),       
             
     elif last_identifier == 'query_ques_number_copy_ini':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -22349,7 +22451,7 @@ def message(request):
     #         WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
     
     # elif last_identifier == 'query_appeal_number':
-    #     msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+    #     msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
     #     returned_mesage = twilioclient.messages.create(
     #     from_=str(receiver),
     #     body= msg_sent,
@@ -22501,7 +22603,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
     
     elif last_identifier == 'query_appeal_number_name':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -22669,7 +22771,7 @@ def message(request):
     #         WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
     
     # elif last_identifier == 'query_appeal_number_ini':
-    #     msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+    #     msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
     #     returned_mesage = twilioclient.messages.create(
     #     from_=str(receiver),
     #     body= msg_sent,
@@ -22998,7 +23100,7 @@ def message(request):
     #         WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),       
             
     # elif last_identifier == 'query_ques_number_sharing':
-    #     msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+    #     msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
     #     returned_mesage = twilioclient.messages.create(
     #     from_=str(receiver),
     #     body= msg_sent,
@@ -23250,7 +23352,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),
             
     elif last_identifier == 'query_sharing_number_name':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
@@ -23573,7 +23675,7 @@ def message(request):
             WhatsappMessages.objects.create(message = msg_sent, sender_name = "Whatsapp Bot", sender_number = response['To'], MessageSid = MessageSid, message_receiver = str(sender_number), identifier = "-"),       
             
     elif last_identifier == 'query_ques_number_sharing_ini':
-        msg_sent = "Are you : \n\n1. An applicant \n2. A PRO/Agency"
+        msg_sent = "Are you? \n1. An applicant \n2. A PRO/Agency \nPlease select either 1 or 2"
         returned_mesage = twilioclient.messages.create(
         from_=str(receiver),
         body= msg_sent,
