@@ -121,37 +121,8 @@ bahrain_client_name2 = "What's your Regulator's name?" \
                       "\n1. National Health Regulatory Authority - Bahrain (NHRA)" \
                       "\n\nPlease type the number 1 to select the regulator body."
 
-def server(phone,email=None):
-    dsn = oracledb.makedsn(
-        'vfprodv1.cyhocriucjwq.eu-west-1.rds.amazonaws.com',
-        '1521',
-        service_name='VERIFLOW')
-    conn = oracledb.connect(
-        user='DATASCIENCETEAM',
-        password='Z7dOtce52nV!2Qe8',
-        dsn=dsn)
-    qry = f"select cd.BARCODE, cd.casecompletedondate, (select name from casestatus where id = cd.casestatus_id) case_status, (select name from customer where id = cd.customer_id) client_name, app.passportcurrentno, app.personalmailid, app.telephonenumber, case when applicantmiddlename is not null then app.applicantfirstname || ' ' ||applicantmiddlename || ' ' || app.applicantlastname else app.applicantfirstname || ' ' || app.applicantlastname end as applicantname from casedetails cd join appuserdetail app on cd.id = app.case_id where app.telephonenumber = '{phone}'"
-    df_main = pd.read_sql(qry,conn)
-    if df_main.shape[0]>0:
-        return df_main
-    else:
-        return None
 
-def server_email(email):
-    dsn = oracledb.makedsn(
-        'vfprodv1.cyhocriucjwq.eu-west-1.rds.amazonaws.com',
-        '1521',
-        service_name='VERIFLOW')
-    conn = oracledb.connect(
-        user='DATASCIENCETEAM',
-        password='Z7dOtce52nV!2Qe8',
-        dsn=dsn)
-    qry = f"select cd.BARCODE, cd.casecompletedondate, (select name from casestatus where id = cd.casestatus_id) case_status, (select name from customer where id = cd.customer_id) client_name, app.passportcurrentno, app.personalmailid, app.telephonenumber, case when applicantmiddlename is not null then app.applicantfirstname || ' ' ||applicantmiddlename || ' ' || app.applicantlastname else app.applicantfirstname || ' ' || app.applicantlastname end as applicantname from casedetails cd join appuserdetail app on cd.id = app.case_id where app.personalmailid = '{email}'" 
-    df_main3 = pd.read_sql(qry,conn)
-    if df_main3.shape[0]>0:
-        return df_main3
-    else:
-        return None
+
 
 
 def multiple_client_email(email, case_number_by_user):
@@ -208,37 +179,6 @@ def multiple_client_phone(phone, case_number_by_user):
         msg = "We could not find your case number with us. \n\nPlease provide a detailed description of the issue you are facing so we can create the support ticket on your behalf."
         return msg
 
-def server_multiple_case(phone,case_number_by_user):
-    dsn = oracledb.makedsn(
-        'vfprodv1.cyhocriucjwq.eu-west-1.rds.amazonaws.com',
-        '1521',
-        service_name='VERIFLOW')
-    conn = oracledb.connect(
-        user='DATASCIENCETEAM',
-        password='Z7dOtce52nV!2Qe8',
-        dsn=dsn)
-    qry = f"select cd.BARCODE, cd.casecompletedondate, (select name from casestatus where id = cd.casestatus_id) case_status, (select name from customer where id = cd.customer_id) client_name, app.passportcurrentno, app.personalmailid, app.telephonenumber, case when applicantmiddlename is not null then app.applicantfirstname || ' ' ||applicantmiddlename || ' ' || app.applicantlastname else app.applicantfirstname || ' ' || app.applicantlastname end as applicantname from casedetails cd join appuserdetail app on cd.id = app.case_id where app.telephonenumber = '{phone}' and cd.barcode = '{case_number_by_user}'"
-    df_main = pd.read_sql(qry,conn)
-    if df_main.shape[0]>0:
-        return df_main
-    else:
-        return "None"
-
-def server_multiple_case_email(email,case_number_by_user):
-    dsn = oracledb.makedsn(
-        'vfprodv1.cyhocriucjwq.eu-west-1.rds.amazonaws.com',
-        '1521',
-        service_name='VERIFLOW')
-    conn = oracledb.connect(
-        user='DATASCIENCETEAM',
-        password='Z7dOtce52nV!2Qe8',
-        dsn=dsn)
-    qry = f"select cd.BARCODE, cd.casecompletedondate, (select name from casestatus where id = cd.casestatus_id) case_status, (select name from customer where id = cd.customer_id) client_name, app.passportcurrentno, app.personalmailid, app.telephonenumber, case when applicantmiddlename is not null then app.applicantfirstname || ' ' ||applicantmiddlename || ' ' || app.applicantlastname else app.applicantfirstname || ' ' || app.applicantlastname end as applicantname from casedetails cd join appuserdetail app on cd.id = app.case_id where app.personalmailid = '{email}' and cd.barcode = '{case_number_by_user}'"
-    df_main = pd.read_sql(qry,conn)
-    if df_main.shape[0]>0:
-        return df_main
-    else:
-        return "None"
 
 def get_country(phone):
     try:
